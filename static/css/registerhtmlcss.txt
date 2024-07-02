@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Registration</title>
+    <link rel="stylesheet" href="{% static 'css/registercss.css">
+</head>
+<body>
+    <h1>User Registration</h1>
+    <h1><a href="{% url 'login' %}">Login</a></h1>
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <label for="username"><b>Username:</b></label>
+        <input type="text" name="username" required><br>
+        
+        
+        
+        <label for="email"><b>Email:</b></label>
+        <input type="email" name="email" required><br>
+        
+        <label for="pass1"><b>Password:</b></label>
+        <input type="password" name="pass1" required><br>
+        
+        <label for="pass2"><b>Confirm Password:</b></label>
+        <input type="password" name="pass2" required><br>
+
+        <label for="year"><b>Year Graduated:</b></label>
+            <input type="text" id="year" name="year" required>
+
+            <label for="strand"><b>Strand:</b></label>
+            <select id="strand" name="strand" required>
+                <option value="tvl">TVL</option>
+                <option value="abm">ABM</option>
+                <option value="humss">HUMSS</option>
+                <option value="stem">STEM</option>
+            </select>
+        
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+
+css
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #001f3f;
+}
+
+h1 {
+    text-align: center;
+    color: #001f3f;
+    margin: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #ffd700;
+}
+
+form {
+    text-align: center;
+    margin-top: 20px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeIn 1s ease-out, slideUp 1s ease-out; /* Added fade-in and slide-up animations */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+input,
+select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #001f3f;
+    border: 1px solid #001f3f;
+    border-radius: 4px;
+}
+
+/* Improved styling for the select element */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('https://cdn2.iconfinder.com/data/icons/essential-web-1/100/dropdown-512.png');
+    background-size: 12px;
+    background-position: calc(100% - 10px) center;
+    background-repeat: no-repeat;
+    padding-right: 30px; /* Adjust as needed */
+}
+
+button {
+    background-color: #001f3f;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Added transition for smooth color change */
+}
+
+button:hover {
+    background-color: #ffd700;
+}

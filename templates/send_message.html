@@ -1,0 +1,185 @@
+<!-- Assuming your template is named send_message.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+</head>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #343a40;
+}
+p a{
+    text-decoration: none;
+}
+.navbar {
+    background: linear-gradient(to right, #001f3f, #0056b3);
+    color: #ffd700;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.2em;
+}
+
+.navbar a:hover {
+    color: #ffcc00;
+}
+
+.group-message-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+}
+
+.group-message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+form {
+    margin-top: 15px;
+}
+
+form input,
+form button {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #001f3f;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+@media only screen and (max-width: 600px) {
+    .group-message-container {
+        width: 90%;
+    }
+}
+
+.group-message-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+}
+
+.group-message {
+    max-width: 70%;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.group-message.received {
+    background-color: #f1f1f1;
+    color: #333;
+    align-self: flex-start;
+}
+
+.group-message.sent {
+    background-color: #4CAF50;
+    color: #fff;
+    align-self: flex-end;
+}
+
+.category-button {
+    font-size: 25px;
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.category-button:hover {
+    background: linear-gradient(to right, #0056b3, #007bff);
+}
+
+
+</style>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        {% if user.is_staff %}
+            <a href="{% url 'admin_post' %}">Home</a>
+        {% else %}
+            <a href="{% url 'regular_user_view' %}">Home</a>
+        {% endif %}
+        <a href="{% url 'send_message' %}">Message</a>
+
+        {% if user.is_staff %}
+        <a href="http://127.0.0.1:8000/admin/myapp/post/">Account Management</a>
+        {% else %}
+        {% endif %}
+        <a href="{% url 'search_user' %}">Search</a>
+            <a href="{% url 'logout' %}">Logout</a>
+
+      
+    </div>
+
+    <div class="group-message-container">
+        
+        <form method="post" action="{% if group and group.id %}{% url 'send_message' group.id %}{% else %}{% url 'send_message' %}{% endif %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Send Message</button>
+        </form>
+        
+        {% if group_messages %}
+            <p>Group Messages exist.</p>
+            {% for message in group_messages reversed %}
+                <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                    <p>
+                        <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.username }}</a>:
+                        {{ message.content }} - {{ message.timestamp }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No group messages found.</p>
+        {% endif %}
+    </div>
+    
+</body>
+</html>

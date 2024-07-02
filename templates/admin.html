@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin View</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <img class="logo" src="{% static 'img/images2.png' %}">
+        <h1>Argao National Highschool Alumni System</h1>
+        <div class="navbar-container">
+            <a href="{% url 'admin_post' %}">Home</a>
+            <a href="{% url 'send_message' %}">Message</a>
+            <a href="http://127.0.0.1:8000/admin/myapp/post/">Management</a>
+            <a href="{% url 'search_user' %}">Search</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <nav class="navbar">
+        <button class="category-button" onclick="toggleCategory('jobs')">Jobs</button>
+        <button class="category-button" onclick="toggleCategory('events')">Events</button>
+        <button class="category-button" onclick="toggleCategory('news')">News</button>
+    </nav>
+
+    <!-- Jobs Category Section -->
+    <div class="category-section" id="jobsSection">
+        <h3>Jobs Category</h3>
+        {% for post in posts %}
+            {% if post.category|lower == 'jobs' %}
+                <div class="post-card" id="jobsPost{{ post.id }}">
+                    <!-- Content for the 'Jobs' category goes here -->
+                    <p>{{ post.content }}</p>
+                    {% if post.link %}
+                        <p><strong>External Link:</strong> <a href="{{ post.link }}" target="_blank" class="post-link">{{ post.link }}</a></p>
+                    {% else %}
+                        <p>{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.photo %}
+                        <img src="{{ post.photo.url }}" alt="Post Photo" class="post-photo">
+                    {% endif %}
+
+                    {% if post.video %}
+                        <video controls class="post-video">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+
+                    <p class="post-info">Posted by: {{ post.user.username }} | Created at: {{ post.created_at }}</p>
+                    <button class="like-button {% if request.user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">Like</button>
+                    <span class="like-count">{{ post.likes.count }}</span> likes
+
+                    <!-- Comment form for each post -->
+                    <form class="comment-form" id="commentForm{{ post.id }}" method="post" action="{% url 'post_comment' post.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="content" class="comment-input" placeholder="Add a comment...">
+                        <button type="submit" class="comment-button">Comment</button>
+                    </form>
+
+                    <!-- Display comments for the post -->
+                    <div class="comments-container" id="commentsContainer{{ post.id }}">
+                        <h3>Comments:</h3>
+                        {% for comment in post.comments.all %}
+                            <p class="comment">
+                                <a href="{% url 'user_profile' comment.user.username %}">{{ comment.user.username }}</a>
+                                : {{ comment.content }} | {{ comment.created_at }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <!-- Button to toggle comments visibility -->
+                <button class="toggle-comments-button" onclick="toggleComments('commentsContainer{{ post.id }}')">Show Comments</button>
+                    
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Events Category Section -->
+    <div class="category-section" id="eventsSection">
+        <h3>Events Category</h3>
+        {% for post in posts %}
+            {% if post.category|lower == 'events' %}
+                <div class="post-card" id="eventsPost{{ post.id }}">
+                    <!-- Content for the 'Events' category goes here -->
+                    <p>{{ post.content }}</p>
+                    {% if post.link %}
+                        <p><strong>External Link:</strong> <a href="{{ post.link }}" target="_blank" class="post-link">{{ post.link }}</a></p>
+                    {% else %}
+                        <p>{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.photo %}
+                        <img src="{{ post.photo.url }}" alt="Post Photo" class="post-photo">
+                    {% endif %}
+
+                    {% if post.video %}
+                        <video controls class="post-video">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+
+                    <p class="post-info">Posted by: {{ post.user.username }} | Created at: {{ post.created_at }}</p>
+                    <button class="like-button {% if request.user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">Like</button>
+                    <span class="like-count">{{ post.likes.count }}</span> likes
+
+                    <!-- Comment form for each post -->
+                    <form class="comment-form" id="commentForm{{ post.id }}" method="post" action="{% url 'post_comment' post.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="content" class="comment-input" placeholder="Add a comment...">
+                        <button type="submit" class="comment-button">Comment</button>
+                    </form>
+
+                    <!-- Display comments for the post -->
+                    <div class="comments-container" id="commentsContainer{{ post.id }}">
+                        <h3>Comments:</h3>
+                        {% for comment in post.comments.all %}
+                            <p class="comment">
+                                <a href="{% url 'user_profile' comment.user.username %}">{{ comment.user.username }}</a>
+                                : {{ comment.content }} | {{ comment.created_at }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <!-- Button to toggle comments visibility -->
+                <button class="toggle-comments-button" onclick="toggleComments('commentsContainer{{ post.id }}')">Show Comments</button>
+                    
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- News Category Section -->
+    <div class="category-section" id="newsSection">
+        <h3>News Category</h3>
+        {% for post in posts %}
+            {% if post.category|lower == 'news' %}
+                <div class="post-card" id="newsPost{{ post.id }}">
+                    <!-- Content for the 'News' category goes here -->
+                    <p>{{ post.content }}</p>
+                    {% if post.link %}
+                        <p><strong>External Link:</strong> <a href="{{ post.link }}" target="_blank" class="post-link">{{ post.link }}</a></p>
+                    {% else %}
+                        <p>{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.photo %}
+                        <img src="{{ post.photo.url }}" alt="Post Photo" class="post-photo">
+                    {% endif %}
+
+                    {% if post.video %}
+                        <video controls class="post-video">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+
+                    <p class="post-info">Posted by: {{ post.user.username }} | Created at: {{ post.created_at }}</p>
+                    <button class="like-button {% if request.user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}">Like</button>
+                    <span class="like-count">{{ post.likes.count }}</span> likes
+
+                    <!-- Comment form for each post -->
+                    <form class="comment-form" id="commentForm{{ post.id }}" method="post" action="{% url 'post_comment' post.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="content" class="comment-input" placeholder="Add a comment...">
+                        <button type="submit" class="comment-button">Comment</button>
+                    </form>
+
+                    <!-- Display comments for the post -->
+                    <div class="comments-container" id="commentsContainer{{ post.id }}">
+                        <h3>Comments:</h3>
+                        {% for comment in post.comments.all %}
+                            <p class="comment">
+                                <a href="{% url 'user_profile' comment.user.username %}">{{ comment.user.username }}</a>
+                                : {{ comment.content }} | {{ comment.created_at }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <!-- Button to toggle comments visibility -->
+                    <button class="toggle-comments-button" onclick="toggleComments('commentsContainer{{ post.id }}')">Show Comments</button>
+                        
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Post form container -->
+    <div class="post-form-container" id="createpost">
+        <div class="container">
+            <h2>Create Post</h2>
+            <form method="post" action="{% url 'post' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="post-button">Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Like button functionality
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const postId = button.dataset.postId;
+
+                const likeCount = button.nextElementSibling;
+
+                fetch(`/like/${postId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        likeCount.textContent = data.likes;
+                        button.classList.toggle('liked', data.liked);
+                    })
+                    .catch(error => {
+                        console.error('Error during fetch operation:', error);
+                    });
+            });
+        });
+    </script>
+
+    <script>
+        // Comment form submission
+        document.querySelectorAll('.comment-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const postId = form.getAttribute('id').replace('commentForm', '');
+                const commentInput = form.querySelector('.comment-input');
+                const commentsContainer = document.getElementById(`commentsContainer${postId}`);
+
+                fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: new URLSearchParams({
+                        'content': commentInput.value,
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(response => {
+                    commentsContainer.innerHTML += response;
+                    commentInput.value = '';
+                })
+                .catch(error => {
+                    console.error('Error during fetch operation:', error);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        let lastClickedCategory = '';
+
+        function toggleCategory(category) {
+            const jobsSection = document.getElementById('jobsSection');
+            const eventsSection = document.getElementById('eventsSection');
+            const newsSection = document.getElementById('newsSection');
+            const createpost = document.getElementById('createpost');
+
+            // Hide all sections
+            jobsSection.style.display = 'none';
+            eventsSection.style.display = 'none';
+            newsSection.style.display = 'none';
+            createpost.style.display = 'none';
+
+            // If the same category is clicked twice, show the 'Create Post' section
+            if (category === lastClickedCategory) {
+                createpost.style.display = 'block';
+                lastClickedCategory = '';
+            } else {
+                // Show the selected section
+                const selectedSection = document.getElementById(`${category}Section`);
+                selectedSection.style.display = 'block';
+                lastClickedCategory = category;
+            }
+        }
+    </script>
+    <script>
+        function toggleComments(commentsContainerId) {
+            const commentsContainer = document.getElementById(commentsContainerId);
+            const toggleButton = document.querySelector(`[onclick="toggleComments('${commentsContainerId}')"]`);
+    
+            if (commentsContainer.style.display === 'none') {
+                commentsContainer.style.display = 'block';
+            } else {
+                commentsContainer.style.display = 'none';
+            }
+    
+            toggleButton.textContent = commentsContainer.style.display === 'none' ? 'Show Comments' : 'Hide Comments';
+        }
+    </script>
+</body>
+</html>

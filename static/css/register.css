@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #001f3f;
+}
+
+h1 {
+    text-align: center;
+    color: #001f3f;
+    margin: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #ffd700;
+}
+
+form {
+    text-align: center;
+    margin-top: 20px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeIn 1s ease-out, slideUp 1s ease-out; /* Added fade-in and slide-up animations */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+input,
+select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #001f3f;
+    border: 1px solid #001f3f;
+    border-radius: 4px;
+}
+
+/* Improved styling for the select element */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('https://cdn2.iconfinder.com/data/icons/essential-web-1/100/dropdown-512.png');
+    background-size: 12px;
+    background-position: calc(100% - 10px) center;
+    background-repeat: no-repeat;
+    padding-right: 30px; /* Adjust as needed */
+}
+
+button {
+    background-color: #001f3f;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Added transition for smooth color change */
+}
+
+button:hover {
+    background-color: #ffd700;
+}

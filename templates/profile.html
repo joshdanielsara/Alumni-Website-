@@ -1,0 +1,207 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        div {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+           
+            text-align: center; /* Center align the content */
+        }
+
+        img {
+            border-radius: 50%; /* Make the image circular */
+            max-width: 100%; /* Ensure the image doesn't exceed its container */
+            margin-bottom: 10%; /* Add some space below the image */
+            margin-left: auto;
+            margin-right: auto; /* Corrected line */
+            position: relative;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .edit-mode {
+            display: none;
+        }
+
+        button {
+            background-color: #001f3f;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button:hover {
+            background-color: #ffd700;
+        }
+
+        .navbar {
+            background-color: #333;
+            width: 100%;
+            padding: 1% 0;
+            text-align: center;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            color: #ffd700;
+        }
+
+        .logout-link {
+            color: #ff5555;
+            text-decoration: none;
+            margin-left: auto;
+        }
+
+        .profile {
+            max-width: 100%;
+            background-color: white;
+           
+            text-align: center; /* Center align the content */
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function toggleEditMode() {
+                const editButton = document.getElementById('editButton');
+                const editMode = document.getElementById('editMode');
+                const displayMode = document.getElementById('displayMode');
+
+                editButton.classList.toggle('hidden');
+                editMode.classList.toggle('hidden');
+                displayMode.classList.toggle('hidden');
+            }
+
+            const editButton = document.getElementById('editButton');
+            if (editButton) {
+                editButton.addEventListener('click', function() {
+                    toggleEditMode();
+                });
+            }
+
+            const fieldsToEdit = ['first_name', 'middle_name', 'last_name', 'year_graduated', 'strand'];
+            fieldsToEdit.forEach(function(fieldId) {
+                const displayElement = document.getElementById(`display_${fieldId}`);
+                if (displayElement) {
+                    displayElement.addEventListener('dblclick', function() {
+                        toggleEditMode();
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'regular_user_view' %}">Home</a>
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'send_message' %}">Message</a>
+            <a href="{% url 'search_user' %}">Search</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+    <h1>Profile</h1>
+    <div>
+        <div>
+            <div class="profile">
+                {% if profile_picture_url %}
+                    <img src="{{ profile_picture_url }}" alt="Profile Picture" class="profile-picture">
+                {% else %}
+                    <p>No profile picture available</p>
+                {% endif %}
+                
+                
+            </div>
+        
+            <button id="editButton" onclick="toggleEditMode()">Edit Profile Details</button>
+        
+            <div id="editMode" class="hidden">
+                <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ profile_form.as_p }}
+                    <button type="submit" name="update_details">Update Profile Details</button>
+                    <button type="button" onclick="toggleEditMode()">Cancel</button>
+                </form>
+            </div>
+        
+            <div id="displayMode">
+                {% for field in profile_form %}
+                    <p id="display_{{ field.name }}">{{ field.label_tag }}: {{ field.value }}</p>
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" value="{{ field.value }}" class="hidden" id="edit_{{ field.name }}">
+                {% endfor %}
+            </div>
+        </div>
+    <script>
+        function toggleEditMode() {
+            var editMode = document.getElementById('editMode');
+            var displayMode = document.getElementById('displayMode');
+            var updateProfileBtn = document.getElementById('updateProfileBtn');
+
+            if (editMode.style.display === 'none' || editMode.style.display === '') {
+                // Switch to edit mode
+                editMode.style.display = 'block';
+                displayMode.style.display = 'none';
+                updateProfileBtn.style.display = 'block';
+            } else {
+                // Switch to display mode
+                editMode.style.display = 'none';
+                displayMode.style.display = 'block';
+                updateProfileBtn.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

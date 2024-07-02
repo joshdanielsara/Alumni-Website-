@@ -1,0 +1,155 @@
+<!-- search_user.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Search</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #343a40; /* Match the text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        form {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #001f3f;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ffd700;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #ffcc00;
+        }
+
+        p {
+            text-align: center;
+        }
+         /* Navbar Styles */
+         .navbar {
+            background: linear-gradient(to right, #001f3f, #0056b3);
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: black;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_post' %}">Home</a>
+                {% else %}
+                    <a href="{% url 'regular_user_view' %}">Home</a>
+                {% endif %}
+
+                {% if user.is_staff %}
+                
+                {% else %}
+                <a href="{% url 'profile' %}">Profile</a>
+                {% endif %}
+                <a href="{% url 'send_message' %}">Message</a>
+                
+                <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+    <h1>User Search</h1>
+
+    <form method="get" action="{% url 'search_user' %}">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search for users">
+        <button type="submit">Search</button>
+    </form>
+    
+    
+
+    {% if results %}
+    <h2>Search Results:</h2>
+    <ul>
+        {% for user in results %}
+            <li><a href="{% url 'user_profile' username=user.username %}">{{ user.username }}</a></li>
+            <li>First Name: {{ user.userprofile.first_name }}</li> <!-- Accessing related fields correctly -->
+            <li>Last Name: {{ user.userprofile.last_name }}</li> <!-- Accessing related fields correctly -->
+            <li>Email: {{ user.email }}</li>
+            <li>Year Graduated: {{ user.userprofile.year_graduated }}</li> <!-- Accessing related fields correctly -->
+            <li>Strand: {{ user.userprofile.strand }}</li> <!-- Accessing related fields correctly -->
+            <!-- ... other user attributes ... -->
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+
+</body>
+</html>

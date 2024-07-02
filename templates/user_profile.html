@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #343a40; /* Match the text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        img {
+            border-radius: 50%; /* Make the image circular */
+            max-width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        strong {
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Form Styles */
+        form {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #001f3f;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffd700;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(to right, #001f3f, #0056b3);
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+        }
+
+        .navbar a:hover {
+            color: #ffcc00;
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_post' %}">Home</a>
+                {% else %}
+                    <a href="{% url 'regular_user_view' %}">Home</a>
+                {% endif %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'send_message' %}">Message</a>
+                
+                <a href="{% url 'search_user' %}">Search</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <div class="profile">
+            {% if profile_picture_url %}
+                <img src="{{ profile_picture_url }}" alt="Profile Picture" class="profile-picture">
+            {% else %}
+                <p>No profile picture available</p>
+            {% endif %}
+            
+            <!-- Debugging information -->
+          
+        </div>
+
+        
+        
+            
+
+
+        <!-- Inside your form in user_profile.html -->
+
+
+
+<div class="user-details">
+    <p><strong>First Name:</strong> {{ viewed_user_profile.first_name }}</p>
+    <p><strong>Middle Name:</strong> {{ viewed_user_profile.middle_name }}</p>
+    <p><strong>Last Name:</strong> {{ viewed_user_profile.last_name }}</p>
+    <p><strong>Strand:</strong> {{ viewed_user_profile.strand }}</p>
+    <p><strong>Year Graduated:</strong> {{ viewed_user_profile.year_graduated }}</p>
+</div>
+
+
+        {% if viewed_user == logged_in_user %}
+            <div class="user-details">
+                <p><strong>Additional Information for Own Profile:</strong> ...</p>
+            </div>
+        {% else %}
+            <div class="user-details">
+                <p><strong>Additional Information for Others' Profiles:</strong> ...</p>
+            </div>
+        {% endif %}
+    </div> 
+</body>
+</html>
