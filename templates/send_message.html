@@ -167,18 +167,19 @@ button:hover {
         </form>
         
         {% if group_messages %}
-            <p>Group Messages exist.</p>
-            {% for message in group_messages reversed %}
-                <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-                    <p>
-                        <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.username }}</a>:
-                        {{ message.content }} - {{ message.timestamp }}
-                    </p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No group messages found.</p>
-        {% endif %}
+        <p>Group Messages exist.</p>
+        {% for message in group_messages reversed %}
+            <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                <p>
+                    <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.first_name }}</a>:
+                    {{ message.content }} - {{ message.timestamp }}
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No group messages found.</p>
+    {% endif %}
+    
     </div>
     
 </body>

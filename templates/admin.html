@@ -7,12 +7,12 @@
 </head>
 <body>
     <nav class="navbar">
-        <img class="logo" src="{% static 'img/images2.png' %}">
+        
         <h1>Argao National Highschool Alumni System</h1>
         <div class="navbar-container">
             <a href="{% url 'admin_post' %}">Home</a>
             <a href="{% url 'send_message' %}">Message</a>
-            <a href="http://127.0.0.1:8000/admin/myapp/post/">Management</a>
+            <a href="http://127.0.0.1:8000/admin/">Management</a>
             <a href="{% url 'search_user' %}">Search</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
@@ -35,7 +35,7 @@
                     {% if post.link %}
                         <p><strong>External Link:</strong> <a href="{{ post.link }}" target="_blank" class="post-link">{{ post.link }}</a></p>
                     {% else %}
-                        <p>{{ post.content }}</p>
+                       
                     {% endif %}
 
                     {% if post.photo %}
@@ -143,7 +143,7 @@
                     {% if post.link %}
                         <p><strong>External Link:</strong> <a href="{{ post.link }}" target="_blank" class="post-link">{{ post.link }}</a></p>
                     {% else %}
-                        <p>{{ post.content }}</p>
+                       
                     {% endif %}
 
                     {% if post.photo %}

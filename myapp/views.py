@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from .models import User
 from .forms import PostForm, CustomRegistrationForm, CommentForm, MessageForm, ProfileForm
 from .models import Post, Comment, UserProfile, Message, Group, Profile
-
+from django.http import HttpResponse
 # ... (the rest of your code follows)
 
 
@@ -69,7 +69,15 @@ def login_view(request):
             else:
                 return redirect('regular_user_view')
         else:
-            messages.error(request, 'Invalid login credentials.')
+            response = HttpResponse(
+                """
+                <script>
+                    alert("Invalid login credentials.");
+                    window.location.href = '/login';
+                </script>
+                """
+            )
+            return response
 
     return render(request, 'login.html')
 
@@ -80,15 +88,87 @@ class CustomRegistrationForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
     first_name = forms.CharField(max_length=30)
-    middle_name = forms.CharField(max_length=30, required=False)
+   
     last_name = forms.CharField(max_length=30)
-    year = forms.CharField(label='Year Graduated', max_length=4)
-    strand = forms.ChoiceField(label='Strand', choices=[
-        ('tvl', 'TVL'),
-        ('abm', 'ABM'),
-        ('humss', 'HUMSS'),
-        ('stem', 'STEM'),
-    ])
+   
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # Validate input
+        if not username or not first_name or not last_name or not email or not password1 or not password2:
+            response = HttpResponse(
+                """
+                <script>
+                    alert("All fields are required.");
+                    window.location.href = '/register';
+                </script>
+                """
+            )
+            return response
+
+        if password1 != password2:
+            response = HttpResponse(
+                """
+                <script>
+                    alert("Passwords do not match.");
+                    window.location.href = '/register';
+                </script>
+                """
+            )
+            return response
+
+        if User.objects.filter(username=username).exists():
+            response = HttpResponse(
+                """
+                <script>
+                    alert("This username is already taken.");
+                    window.location.href = '/register';
+                </script>
+                """
+            )
+            return response
+
+        # Create a new user
+        user = User.objects.create_user(username=username, email=email, password=password1)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+
+        # Create a user profile
+        user_profile = UserProfile(user=user)
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
+        user_profile.save()
+
+        response = HttpResponse(
+            """
+            <script>
+                alert("Your account has been successfully created.");
+                window.location.href = '/login';
+            </script>
+            """
+        )
+        return response
+    else:
+        return render(request, "register.html")
+
+
+
+
+
+
+
+
+
+
+
 
 # views.py
 from django.shortcuts import render, redirect
@@ -102,47 +182,13 @@ from django.contrib.auth.models import User
 from .forms import CustomRegistrationForm
 from .models import UserProfile
 
-def register(request):
-    user_profile = None  # Initialize user_profile here
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .models import UserProfile
 
-    if request.method == "POST":
-        form = CustomRegistrationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password1']
-                
-            try:
-                year_graduated = int(form.cleaned_data['year'])
-                if not (1994 <= year_graduated <= 2024):
-                    form.add_error('year', 'Year Graduated must be between 1994 and 2024.')
-                    return render(request, "register.html", {'form': form})
-            except ValueError:
-                form.add_error('year', 'Year Graduated must be a valid number.')
-                return render(request, "register.html", {'form': form})
 
-            if User.objects.filter(username=username).exists():
-                form.add_error('username', 'This username is already taken.')
-                return render(request, "register.html", {'form': form})
 
-            # Create a new user
-            user = User.objects.create_user(username=username, email=email, password=password)
-
-            # Create a user profile
-            user_profile = UserProfile(user=user)
-            user_profile.first_name = form.cleaned_data['first_name']
-            user_profile.middle_name = form.cleaned_data['middle_name']
-            user_profile.last_name = form.cleaned_data['last_name']
-            user_profile.year_graduated = year_graduated
-            user_profile.strand = form.cleaned_data['strand']
-            user_profile.save()
-
-            messages.success(request, 'Your account has been successfully created.')
-            return redirect('login')
-    else:
-        form = CustomRegistrationForm()
-
-    return render(request, "register.html", {'form': form})
 
 
 
@@ -243,7 +289,8 @@ def send_message(request, receiver_id=None):
     return render(request, 'send_message.html', {'form': form, 'group_messages': group_messages})
 
 
-from .forms import ProfilePictureForm
+from django.contrib.auth.models import User
+from .forms import ProfileForm, ProfilePictureForm
 
 @login_required(login_url='login')
 def profile(request):
@@ -256,19 +303,22 @@ def profile(request):
         if profile_form.is_valid() and profile_picture_form.is_valid():
             profile_form.save()
             profile_picture_form.save()
+
+            # Update the User model fields
+            user = request.user
+            user.first_name = profile_form.cleaned_data['first_name']
+            user.last_name = profile_form.cleaned_data['last_name']
+            user.save()
+
             return redirect('profile')
     else:
         profile_form = ProfileForm(instance=user_profile)
         profile_picture_form = ProfilePictureForm(instance=user_profile)
 
-    print("User Profile:", user_profile)
-    print("Profile Form:", profile_form)
-    print("Profile Picture Form:", profile_picture_form)
-
-    # Check if the profile picture is available
     profile_picture_url = user_profile.profile_picture.url if user_profile.profile_picture else None
 
     return render(request, 'profile.html', {'profile': user_profile, 'profile_form': profile_form, 'profile_picture_url': profile_picture_url})
+
 
 
 
@@ -281,7 +331,6 @@ from .forms import UserProfileForm
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
 @method_decorator(login_required, name='dispatch')
 class UserProfileView(View):
     template_name = 'user_profile.html'
@@ -299,9 +348,10 @@ class UserProfileView(View):
         return render(request, self.template_name, {
             'viewed_user': viewed_user,
             'logged_in_user': logged_in_user,
-            'viewed_user_profile': viewed_user_profile_form,
+            'viewed_user_profile': viewed_user_profile,
             'profile_picture_url': profile_picture_url,
         })
+
 
 
 # views.py
@@ -319,7 +369,7 @@ class SearchUserView(View):
     template_name = 'search_user.html'
 
     def get(self, request):
-        query = request.GET.get('q')
+        query = request.GET.get('q', '')  # Default to an empty string if 'q' is None
 
         if query:
             results = User.objects.filter(
@@ -327,13 +377,14 @@ class SearchUserView(View):
                 Q(first_name__icontains=query) |
                 Q(last_name__icontains=query) |
                 Q(email__icontains=query) |
-                Q(userprofile__year_graduated__icontains=query) |  # Accessing related fields correctly
-                Q(userprofile__strand__icontains=query)  # Accessing related fields correctly
-            )
+                Q(userprofile__year_graduated__icontains=query) |
+                Q(userprofile__strand__icontains=query)
+            ).distinct()
         else:
             results = []
 
         return render(request, self.template_name, {'results': results, 'query': query})
+
 
 
 

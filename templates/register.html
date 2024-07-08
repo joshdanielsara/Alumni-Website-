@@ -1,135 +1,90 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
-<head>
-    <title>User Registration</title>
-    {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/64d58efce2.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <title>Sign in & Sign up Form</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
 
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('static/img/bg.jpg'); /* Update with the correct path */
-            background-size: cover; /* Cover the entire viewport */
-            background-position: center; /* Center the background image */
-            background-repeat: repeat;
-            color: #343a40;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
-        .logo {
-            width: 100px; /* Adjust the width as needed */
-            height: 100px; /* Adjust the height as needed */
-            margin: 20px 20px 0 20px; /* Add spacing between logo and form */
-            border-radius: 50%; /* Make it a circle */
-        }
 
-        h1 {
-            text-align: center;
-            color: #ffd700;
-            margin: 10px auto;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            letter-spacing: 2px;
-            font-weight: bold;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        a {
-            color: #ffd700;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.2em;
-        }
-
-        a:hover {
-            color: #ffcc00;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        label {
-            color: #ffd700;
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            box-sizing: border-box;
-            background-color: #fff;
-            color: #495057;
-            border: 1px solid #495057;
-            border-radius: 8px;
-        }
-
-        button {
-            background: linear-gradient(to right, #001f3f, #0056b3);
-            color: #fff;
-            padding: 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background: linear-gradient(to right, #0056b3, #001f3f);
-        }
-    </style>
-</head>
-
-<body>
-    <div class="registration-container">
-        <h1>User Registration</h1>
-        <a href="{% url 'login' %}">Login</a>
-        <form method="post" action="{% url 'register' %}">
+           <form id="myForm" onsubmit="return validateForm()" method="POST" action="{% url 'register' %}" class="sign-up-form">
             {% csrf_token %}
-            
-            <label for="username">Username:</label>
-            {{ form.username }}
-            
-            <label for="email">Email:</label>
-            {{ form.email }}
-            
-            <label for="password1">Password:</label>
-            {{ form.password1 }}
-            
-            <label for="password2">Confirm Password:</label>
-            {{ form.password2 }}
-            
-            <label for="first_name">First Name:</label>
-            {{ form.first_name }}
-            
-            <label for="middle_name">Middle Name:</label>
-            {{ form.middle_name }}
-            
-            <label for="last_name">Last Name:</label>
-            {{ form.last_name }}
-            
-            <label for="year">Year Graduated:</label>
-            {{ form.year }}
-            
-            <label for="strand">Strand:</label>
-            {{ form.strand }}
-            
-            {% if form.errors %}
-                <p class="error">{{ form.errors }}</p>
-            {% endif %}
-            
-            <button type="submit">Register</button>
-        </form>
+            <h2 class="title">Sign up</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Username" name="username"/>
+            </div>
+
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="First Name" name="first_name" />
+            </div>
+
+
+
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Last Name" name="last_name" />
+            </div>
+
+
+
+
+
+
+
+
+
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              <input type="email" placeholder="Email" name="email" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Password" name="password1" />
+            </div>
+
+
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Confirm Password" name="password2" />
+            </div>
+
+
+            <input type="submit" class="btn" value="Sign up" />
+          
+          </form>
+        </div>
+      </div>
+
+      <div class="panels-container">
+       
+        <div class="panel right-panel">
+          <div class="content">
+            <h3>One of us ?</h3>
+            <p>
+             Welcome to my Alumni Website
+            </p>
+            <a href="{%url 'login'%}">   <button class="btn transparent" id="sign-in-btn">
+              Sign in
+            </button></a>
+          </div>
+          <img src="{% static 'img/register.png' %}" class="image" alt="" />
+        </div>
+      </div>
     </div>
-</body>
+
+    <script src="{% static 'js/register.js' %}"></script>
+  </body>
 </html>

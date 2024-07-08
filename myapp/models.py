@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Post Models
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_posts', through='Like')
     photo = models.ImageField(upload_to='post_photos/', null=True, blank=True)
@@ -53,14 +53,17 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
-class GroupMessage(models.Model):
+
+
+class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.CASCADE)
-    
+    receiver = models.ForeignKey(User, related_name='received_messages', null=True, blank=True, on_delete=models.CASCADE)
+
     def __str__(self):
-        return f"{self.sender.username}: {self.content}"
+        return f"{self.sender.first_name}: {self.content}"
+
 
 # Profile Models
 class Profile(models.Model):

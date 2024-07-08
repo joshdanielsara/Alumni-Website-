@@ -127,9 +127,10 @@
     <h1>User Search</h1>
 
     <form method="get" action="{% url 'search_user' %}">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search for users">
+        <input type="text" name="q" value="{{ query|default_if_none:'' }}" placeholder="Search for users">
         <button type="submit">Search</button>
     </form>
+    
     
     
 

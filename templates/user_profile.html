@@ -137,24 +137,15 @@
 
 
 
-<div class="user-details">
-    <p><strong>First Name:</strong> {{ viewed_user_profile.first_name }}</p>
-    <p><strong>Middle Name:</strong> {{ viewed_user_profile.middle_name }}</p>
-    <p><strong>Last Name:</strong> {{ viewed_user_profile.last_name }}</p>
-    <p><strong>Strand:</strong> {{ viewed_user_profile.strand }}</p>
-    <p><strong>Year Graduated:</strong> {{ viewed_user_profile.year_graduated }}</p>
-</div>
+        <div class="user-details">
+            <label><strong>First Name:</strong> {{ viewed_user_profile.first_name }}</label><br>
+            <label><strong>Middle Name:</strong> {{ viewed_user_profile.middle_name }}</label><br>
+            <label><strong>Last Name:</strong> {{ viewed_user_profile.last_name }}</label><br>
+            <label><strong>Strand:</strong> {{ viewed_user_profile.strand }}</label><br>
+            <label><strong>Year Graduated:</strong> {{ viewed_user_profile.year_graduated }}</label><br>
+        </div>
 
-
-        {% if viewed_user == logged_in_user %}
-            <div class="user-details">
-                <p><strong>Additional Information for Own Profile:</strong> ...</p>
-            </div>
-        {% else %}
-            <div class="user-details">
-                <p><strong>Additional Information for Others' Profiles:</strong> ...</p>
-            </div>
-        {% endif %}
+      
     </div> 
 </body>
 </html>

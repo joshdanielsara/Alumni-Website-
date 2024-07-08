@@ -12,7 +12,7 @@ class CustomRegistrationForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
     first_name = forms.CharField(max_length=30, required=False)
-    middle_name = forms.CharField(max_length=30, required=False)
+   
     last_name = forms.CharField(max_length=30, required=False)
     year = forms.CharField(label='Year Graduated', max_length=4, required=False)
     strand = forms.ChoiceField(label='Strand', choices=[
@@ -51,7 +51,7 @@ class ProfilePictureForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'middle_name', 'last_name', 'year_graduated', 'strand', 'profile_picture']
+        fields = ['first_name', 'last_name', 'year_graduated', 'strand', 'profile_picture']
 
 
 
@@ -59,8 +59,9 @@ class UserProfileForm(forms.ModelForm):
 # Profile Forms
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ['first_name', 'middle_name', 'last_name', 'year_graduated', 'strand', 'profile_picture']
+        model = UserProfile
+        fields = ['first_name', 'last_name', 'year_graduated', 'strand', 'profile_picture']
+
 
 
 # Post and Comment Forms
@@ -76,9 +77,7 @@ class PostForm(forms.ModelForm):
         content = cleaned_data.get('content')
         link = cleaned_data.get('link')
 
-        if not content and not link:
-            raise forms.ValidationError("You must provide either content or a link.")
-
+       
         return cleaned_data
 
 
