@@ -69,7 +69,7 @@
                 {% if group_messages %}
                     <p>Group Messages exist.</p>
                     {% for message in group_messages reversed %}
-                        <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                        <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
                             <p class="p-message">
                                 <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.first_name }}</a>:
                                 {{ message.content }}
@@ -90,6 +90,9 @@
                 {% csrf_token %}
                 <input type="text" name="message" placeholder="Type your message here..." required>
             </form>
+            
+           
+            
         </div>
     </div>
     
@@ -104,32 +107,36 @@
         });
     </script>
     <!-- Delete Message -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('.delete-message').forEach(function(element) {
-            element.addEventListener('click', function() {
-                const messageId = this.getAttribute('data-id');
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                fetch(`/delete_message/${messageId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrftoken,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        this.parentElement.remove();
-                    } else {
-                        alert('Failed to delete message.');
-                    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.delete-message').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    const messageId = this.getAttribute('data-id');
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    fetch(`/delete_message/${messageId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the entire message container
+                            const messageElement = document.querySelector(`.group-message[data-message-id="${messageId}"]`);
+                            if (messageElement) {
+                                messageElement.remove();
+                            }
+                        } else {
+                            alert('Failed to delete message.');
+                        }
+                    });
                 });
             });
         });
-    });
-</script>
+    </script>
 
     <!-- Name limit-->
 <script>

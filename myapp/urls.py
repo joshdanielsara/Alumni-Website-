@@ -11,8 +11,7 @@ urlpatterns = [
     path('', login_view, name='login'),
        path('home', home, name='home'),
     path('login', login_view, name='login'),
- 
-    path('admin_post/', admin_post, name='admin_post'),
+     path('admin_post/', admin_post, name='admin_post'),
     path('register', register, name='register'),  
      path('send_message/', send_message, name='send_message'),
       path('news', news, name='news'),

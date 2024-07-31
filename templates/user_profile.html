@@ -102,7 +102,7 @@
                 {% if user.is_staff %}
                     <a href="{% url 'admin_post' %}">Home</a>
                 {% else %}
-                    <a href="{% url 'regular_user_view' %}">Home</a>
+                    <a href="{% url 'home' %}">Home</a>
                 {% endif %}
                 <a href="{% url 'profile' %}">Profile</a>
                 <a href="{% url 'send_message' %}">Message</a>

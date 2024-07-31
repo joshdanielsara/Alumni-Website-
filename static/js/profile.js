@@ -45,3 +45,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const limitText = (selector, limit) => {
+        document.querySelectorAll(selector).forEach(el => {
+            el.querySelectorAll('p').forEach(p => {
+                if (p.textContent.length > limit) {
+                    p.textContent = p.textContent.substring(0, limit) + '...';
+                }
+            });
+        });
+    };
+
+    limitText('#displayMode', 40);  // Adjust the limit as needed
+});
+
