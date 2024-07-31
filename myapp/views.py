@@ -2,58 +2,61 @@ from django import forms
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
+from django.urls import reverse
 from django.utils.decorators import method_decorator
-from .models import User
-from .forms import PostForm, CustomRegistrationForm, CommentForm, MessageForm, ProfileForm
-from .models import Post, Comment, UserProfile, Message, Group, Profile
-from django.http import HttpResponse
-# ... (the rest of your code follows)
+from django.views import View
+from django.db.models import Q
+
+from .forms import UserProfileForm
+
+from .forms import ProfileForm, ProfilePictureForm
+
+from .forms import (
+    PostForm, 
+    CustomRegistrationForm, 
+    CommentForm, 
+    MessageForm, 
+    ProfileForm
+)
+from .models import (
+    UserProfile, 
+    Post, 
+    Comment, 
+    Message, 
+    Group, 
+    Profile
+)
+
+
+
+def home(request):
+    return render(request, 'home.html')
+
+
 
 
 @login_required(login_url='login')
-def regular_user_view(request):
+def jobs(request):
     all_posts = Post.objects.all()
-    comment_form = CommentForm()  # Add this line to create a comment form instance
-    return render(request, 'user.html', {'posts': all_posts, 'comment_form': comment_form})
-
-
-
-
-
+    comment_form = CommentForm()
+    return render(request, 'jobs.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
 
 @login_required(login_url='login')
-def admin_post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            messages.success(request, 'Post successfully created.')
-            return redirect('admin_post')
-    else:
-        form = PostForm()
-
-    posts = Post.objects.all()
-    return render(request, 'admin.html', {'form': form, 'posts': posts})
+def news(request):
+    all_posts = Post.objects.all()
+    comment_form = CommentForm()
+    return render(request, 'news.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
 
 @login_required(login_url='login')
-def post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            messages.success(request, 'Post successfully created.')
-            return redirect('admin_post')
-    else:
-        form = PostForm()
+def events(request):
+    all_posts = Post.objects.all()
+    comment_form = CommentForm()
+    return render(request, 'events.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
 
-    return render(request, 'admin.html', {'form': form})
+
 
 
 def login_view(request):
@@ -67,7 +70,7 @@ def login_view(request):
             if user.is_superuser:
                 return redirect('admin_post')
             else:
-                return redirect('regular_user_view')
+                return redirect('home')
         else:
             response = HttpResponse(
                 """
@@ -166,40 +169,38 @@ def register(request):
 
 
 
+@login_required(login_url='login')
+def admin_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, 'Post successfully created.')
+            return redirect('admin_post')
+    else:
+        form = PostForm()
+
+    posts = Post.objects.all()
+    return render(request, 'admin.html', {'form': form, 'posts': posts})
 
 
 
+@login_required(login_url='login')
+def post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            messages.success(request, 'Post successfully created.')
+            return redirect('admin_post')
+    else:
+        form = PostForm()
 
-# views.py
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import CustomRegistrationForm
-from .models import UserProfile
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.models import User
-from .forms import CustomRegistrationForm
-from .models import UserProfile
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib import messages
-from .models import UserProfile
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render(request, 'admin.html', {'form': form})
 
 
 def logout_view(request):
@@ -227,9 +228,6 @@ def like_post(request, post_id):
     return JsonResponse({'likes': likes_count, 'liked': user in post.likes.all()})
 
 
-
-
-
 @login_required(login_url='login')
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -242,21 +240,62 @@ def post_comment(request, post_id):
             comment.post = post
             comment.save()
 
-            # Format the HTML for the new comment
-            comment_html = f'<p class="comment">{comment.content} - {comment.user.username} | {comment.created_at}</p>'
+            # Prepare response data
+            response_data = {
+                'comment': {
+                    'id': comment.id,
+                    'user': {
+                        'username': comment.user.username,
+                        'first_name': comment.user.first_name
+                    },
+                    'content': comment.content,
+                    'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+                }
+            }
 
-            # Return HTML response directly
-            return HttpResponse(comment_html)
+            # Return JSON response with comment data
+            return JsonResponse(response_data)
+        else:
+            # Return an error response if form is invalid
+            return JsonResponse({'error': 'Invalid form submission'}, status=400)
 
-    else:
-        comment_form = CommentForm()
+    # For non-POST requests or when the form is invalid
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-    if request.user.is_superuser:
-        template = 'admin.html'
-    else:
-        template = 'user.html'
 
-    return render(request, template, {'post': post, 'comment_form': comment_form})
+
+def get_comments(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all().values(
+        'id', 'content', 'created_at', 'user__username', 'user__first_name'
+    )
+    # Format created_at to a human-readable format
+    formatted_comments = [
+        {
+            'id': comment['id'],
+            'content': comment['content'],
+            'created_at': comment['created_at'].strftime('%B %d, %Y, %I:%M %p'),
+            'user': {
+                'username': comment['user__username'],
+                'first_name': comment['user__first_name']
+            }
+        } for comment in comments
+    ]
+    return JsonResponse({'comments': formatted_comments})
+
+
+
+@login_required(login_url='login')
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user == comment.user or request.user.is_superuser:
+        comment.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
+
+
+
+
 
 
 
@@ -266,31 +305,43 @@ def post_comment(request, post_id):
 def send_message(request, receiver_id=None):
     if receiver_id is not None:
         recipient = get_object_or_404(User, pk=receiver_id)
-        # Handle individual messages here
     else:
         recipient = None
-        # Handle group messages here
 
     if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = request.user
+        content = request.POST.get('message', '').strip()
+        if content:
+            message = Message(sender=request.user, content=content)
             if recipient:
                 message.receiver = recipient
             message.save()
             return redirect('send_message', receiver_id=recipient.id) if recipient else redirect('send_message')
+
+    # Handle search query
+    query = request.GET.get('query')
+    if query:
+        group_messages = Message.objects.filter(
+            Q(content__icontains=query),
+            receiver=None
+        ).order_by('-timestamp')[::-1]
     else:
-        form = MessageForm()
+        group_messages = Message.objects.filter(receiver=None).order_by('-timestamp')[::-1]
 
-    # Retrieve group messages
-    group_messages = Message.objects.filter(receiver=None).order_by('-timestamp')[::-1]
-
-    return render(request, 'send_message.html', {'form': form, 'group_messages': group_messages})
+    return render(request, 'send_message.html', {'group_messages': group_messages, 'recipient': recipient})
 
 
-from django.contrib.auth.models import User
-from .forms import ProfileForm, ProfilePictureForm
+
+
+
+
+
+@login_required(login_url='login')
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id, sender=request.user)
+    if request.method == 'POST':
+        message.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 @login_required(login_url='login')
 def profile(request):
@@ -326,11 +377,6 @@ def profile(request):
 
 
 
-from .forms import UserProfileForm
-
-
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 @method_decorator(login_required, name='dispatch')
 class UserProfileView(View):
     template_name = 'user_profile.html'
@@ -351,17 +397,6 @@ class UserProfileView(View):
             'viewed_user_profile': viewed_user_profile,
             'profile_picture_url': profile_picture_url,
         })
-
-
-
-# views.py
-
-from django.views import View
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from django.db.models import Q
-
-
 
 
 

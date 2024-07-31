@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin:0; padding:0;
+    box-sizing: border-box;
+    outline: none; border:none;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: .2s linear;
+
+    
+}
+
+
+
+
+
+.container{
+    background:linear-gradient(45deg, skyblue, navy);
+    padding:15px 9%;
+    padding-bottom: 100px;
+    min-height: 150vh;
+   
+}
+
+.container .heading{
+    text-align: center;
+    padding-bottom: 15px;
+    color:#fff;
+    text-shadow: 0 5px 10px rgba(0,0,0,.2);
+    font-size: 50px;
+}
+
+.container .box-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap:15px;
+}
+
+.container .box-container .box{
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    border-radius: 5px;
+    background: #fff;
+    text-align: center;
+    padding:30px 20px;
+    height: 400px;
+}
+
+
+
+.container .box-container .box h3{
+    color:#444;
+    font-size: 22px;
+    padding:10px 0;
+}
+
+
+.caption {
+    color: black;
+    font-size: 18px;
+    line-height: 1.8;
+font-weight: 600;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.link .post-link {
+    color: blue;
+    text-decoration: none;
+}
+
+.container .box-container .box .btn{
+
+    display: inline-block;
+    background:#333;
+    color:#fff;
+    font-size: 17px;
+    border-radius: 5px;
+    padding: 8px 25px;
+}
+
+.container .box-container .box .btn:hover{
+    letter-spacing: 1px;
+}
+
+.container .box-container .box:hover{
+    box-shadow: 0 10px 15px rgba(0,0,0,.3);
+    transform: scale(1.03);
+}
+
+@media (max-width:768px){
+    .container{
+        padding:20px;
+    }
+}
+
+
+
+.photo{
+    height: 55%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+
+.container .box-container .box img{
+    height: 200px;
+    width: 200px;
+}
+
+
+.like-icon {
+    color: black; /* Default color */
+    
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.like-icon.liked {
+    color: red; /* Color when liked */
+}
+
+
+.container .box-container .box .input-container .comment-icon {
+    color: gray;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.comment-input{
+    background-color: whitesmoke;
+    padding: 5px;
+   
+    border-radius: 5px;
+}
+    
+.input{
+    color:#777;
+    font-size: 13px;
+    line-height: 1.8;
+    width: 70%;
+    border-radius: 5px;
+    padding: 0 5px;
+    background-color: #EDE9E8;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+
+.main{
+display: none;
+position: absolute;
+background-color: white;
+width: 50%;
+left: 25%;
+z-index: 999;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+
+top: 15%;
+border-radius: 5px;
+
+}
+
+.more {
+   
+color: #777;
+font-size: 15px;
+line-height: 1.8;
+width: 90%;
+margin-left: 5%;
+border-radius: 5px;
+white-space: nowrap;
+background-color: whitesmoke;
+box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1); /* Optional: Add box shadow */
+padding: 20px;
+max-height: 400px;
+overflow: hidden; /* Ensure overflow is hidden to manage content within */
+overflow-y: auto; /* Enable vertical scrollbar */
+}
+
+
+
+.more .photo-container {
+  
+    max-height: 50%;
+    width: 100%;
+   
+   
+}
+
+.more .photo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-auto-rows: minmax(200px, auto);
+    gap: 10px;
+    padding-bottom: 10px; /* Optional: Adjust bottom padding as needed */
+}
+
+.more .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.more .photo video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+
+
+.action {
+padding: 5px;
+background-color: white;
+border-radius: 5px;
+width: 100%;
+margin-top: 3%;
+padding: 10px; 
+z-index: 999; 
+}
+
+.action .comment{
+
+margin-bottom: 2px;
+}
+#exit{
+margin-top: 2%;
+margin-left: 90%;
+cursor: pointer;
+}
+
+.fa-comment{
+    cursor: pointer;
+}
+
+@media (max-width:600px) {
+    .main{
+        width: 80%;
+        left: 10%;
+    }
+}
+
+.box-container a{
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.post-info{
+color: gray;
+    font-size: 10px;
+}
+.comment-form{
+
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.comment_details{
+    font-size: 10px;
+}
+
+.main-comment{
+    background-color: whitesmoke;
+width: 300px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+
+}
+
+.delete-comment{
+    height: 10px;
+}

@@ -1,186 +1,154 @@
-<!-- Assuming your template is named send_message.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/send_message.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <title>Send Message</title>
 </head>
-<style>
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #343a40;
-}
-p a{
-    text-decoration: none;
-}
-.navbar {
-    background: linear-gradient(to right, #001f3f, #0056b3);
-    color: #ffd700;
-    padding: 15px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navbar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navbar a {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 1.2em;
-}
-
-.navbar a:hover {
-    color: #ffcc00;
-}
-
-.group-message-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    color: #333;
-    text-align: center;
-}
-
-.group-message {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-form {
-    margin-top: 15px;
-}
-
-form input,
-form button {
-    padding: 10px;
-    margin-bottom: 10px;
-    width: calc(100% - 20px);
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #001f3f;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-@media only screen and (max-width: 600px) {
-    .group-message-container {
-        width: 90%;
-    }
-}
-
-.group-message-container {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-end;
-}
-
-.group-message {
-    max-width: 70%;
-    margin-bottom: 10px;
-    padding: 10px;
-}
-
-.group-message.received {
-    background-color: #f1f1f1;
-    color: #333;
-    align-self: flex-start;
-}
-
-.group-message.sent {
-    background-color: #4CAF50;
-    color: #fff;
-    align-self: flex-end;
-}
-
-.category-button {
-    font-size: 25px;
-    background: linear-gradient(to right, #007bff, #0056b3);
-    color: #fff;
-    padding: 8px 15px;
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-}
-
-.category-button:hover {
-    background: linear-gradient(to right, #0056b3, #007bff);
-}
-
-
-</style>
 <body>
     <!-- Navbar -->
-    <div class="navbar">
-        {% if user.is_staff %}
-            <a href="{% url 'admin_post' %}">Home</a>
-        {% else %}
-            <a href="{% url 'regular_user_view' %}">Home</a>
-        {% endif %}
-        <a href="{% url 'send_message' %}">Message</a>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-user"></i></a>
 
-        {% if user.is_staff %}
-        <a href="http://127.0.0.1:8000/admin/myapp/post/">Account Management</a>
-        {% else %}
-        {% endif %}
-        <a href="{% url 'search_user' %}">Search</a>
-            <a href="{% url 'logout' %}">Logout</a>
+  
+  
+        <div class="navigation">
+          <ul class="menu">
+            <div class="close-btn"></div>
+            <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#about">About</a>
+             
+            </li>
+            <li class="menu-item"><a href="{% url 'profile' %}">Profile</a></li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#">News <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                <li class="sub-item"><a href="{% url 'news' %}">News</a></li>
+                <li class="sub-item"><a href="{% url 'jobs' %}">Job Hiring</a></li>
+                <li class="sub-item"><a href="{% url 'events' %}">Events</a></li>
+                
+                <li class="sub-item more">
+                  <a class="more-btn" href="#">More Items <i class="fas fa-angle-right"></i></a>
+                  <ul class="more-menu">
+                    <li class="more-item"><a href="#">More Item 01</a></li>
+                    <li class="more-item"><a href="#">More Item 02</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item"><a href="{% url 'send_message' %}">Message</a></li>
+          
+            <li class="menu-item"><a href="#">Contact</a></li>
+            <li class="menu-item"><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </div>
+        <div class="menu-btn"></div>
+      </header>
 
-      
-    </div>
-
-    <div class="group-message-container">
-        
-        <form method="post" action="{% if group and group.id %}{% url 'send_message' group.id %}{% else %}{% url 'send_message' %}{% endif %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Send Message</button>
-        </form>
-        
-        {% if group_messages %}
-        <p>Group Messages exist.</p>
-        {% for message in group_messages reversed %}
-            <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-                <p>
-                    <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.first_name }}</a>:
-                    {{ message.content }} - {{ message.timestamp }}
-                </p>
+      <div class="container">
+        <h1 class="heading">Alumni Groupchat</h1>
+        <div class="main">
+         
+         
+            <form id="search-form" method="get" action="{% url 'send_message' %}" class="search-form">
+                <i class="material-icons search-message"style="cursor: pointer;" onclick="search()">search</i>
+                <input type="text" name="query" placeholder="Search messages..." value="{{ request.GET.query|default:'' }}">
+                
+            </form>
+    
+            <div class="group-message-container">
+                {% if group_messages %}
+                    <p>Group Messages exist.</p>
+                    {% for message in group_messages reversed %}
+                        <div class="group-message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                            <p class="p-message">
+                                <a href="{% url 'user_profile' message.sender.username %}">{{ message.sender.first_name }}</a>:
+                                {{ message.content }}
+                            </p>
+                            <div class="message-meta">
+                                <h5 class="timestamp">{{ message.timestamp }}</h5>
+                                {% if message.sender == request.user %}
+                                    <i class="material-icons delete-message" data-id="{{ message.id }}" style="cursor: pointer;">delete</i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No group messages found.</p>
+                {% endif %}
             </div>
-        {% endfor %}
-    {% else %}
-        <p>No group messages found.</p>
-    {% endif %}
-    
+            <form id="message-form" method="post" action="{% if recipient %}{% url 'send_message' recipient.id %}{% else %}{% url 'send_message' %}{% endif %}" class="submit-form">
+                {% csrf_token %}
+                <input type="text" name="message" placeholder="Type your message here..." required>
+            </form>
+        </div>
     </div>
     
+        <!-- Submissoin js -->
+    
+    <script>
+        document.getElementById('message-form').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default form submission
+                this.submit(); // Submit the form programmatically
+            }
+        });
+    </script>
+    <!-- Delete Message -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.delete-message').forEach(function(element) {
+            element.addEventListener('click', function() {
+                const messageId = this.getAttribute('data-id');
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                fetch(`/delete_message/${messageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.parentElement.remove();
+                    } else {
+                        alert('Failed to delete message.');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+    <!-- Name limit-->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const limitText = (selector, limit) => {
+            document.querySelectorAll(selector).forEach(el => {
+                if (el.textContent.length > limit) {
+                    el.textContent = el.textContent.substring(0, limit) + '...';
+                }
+            });
+        };
+    
+        limitText('.group-message p a', 10);  // Adjust the limit as needed
+        limitText('.group-message.received p a', 10);  // Adjust the limit as needed
+    });
+    </script>
+
+
+
+
 </body>
 </html>
