@@ -35,7 +35,6 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.created_at}"
 
-# Message Models
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='received_messages')
@@ -43,7 +42,7 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.sender} to {self.receiver} - {self.timestamp}"
+        return f"{self.sender.first_name}: {self.content}"
 
 # Group Models
 class Group(models.Model):
@@ -54,23 +53,15 @@ class Group(models.Model):
         return self.name
 
 
-
-class Message(models.Model):
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='received_messages', null=True, blank=True, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.sender.first_name}: {self.content}"
-
-
 # Profile Models
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30)
     middle_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30)
+    email = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
     year_graduated = models.CharField(max_length=4)
     strand = models.CharField(max_length=10, choices=[
         ('tvl', 'TVL'),
@@ -89,6 +80,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=30, blank=True, null=True)
     middle_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=30, blank=True, null=True)
+    
     year_graduated = models.CharField(max_length=30, blank=True, null=True)
     strand = models.CharField(max_length=10, blank=True, null=True, choices=[
         ('tvl', 'TVL'),

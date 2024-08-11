@@ -37,24 +37,50 @@ def home(request):
 
 
 
-
 @login_required(login_url='login')
 def jobs(request):
-    all_posts = Post.objects.all()
+    query = request.GET.get('query', '')
+    all_posts = Post.objects.filter(category__iexact='jobs')
+
+    if query:
+        all_posts = all_posts.filter(content__icontains=query)
+
     comment_form = CommentForm()
-    return render(request, 'jobs.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
+    return render(request, 'jobs.html', {
+        'posts': all_posts,
+        'comment_form': comment_form,
+        'current_user': request.user
+    })
 
 @login_required(login_url='login')
 def news(request):
-    all_posts = Post.objects.all()
+    query = request.GET.get('query', '')
+    all_posts = Post.objects.filter(category__iexact='news')
+
+    if query:
+        all_posts = all_posts.filter(content__icontains=query)
+
     comment_form = CommentForm()
-    return render(request, 'news.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
+    return render(request, 'news.html', {
+        'posts': all_posts,
+        'comment_form': comment_form,
+        'current_user': request.user
+    })
 
 @login_required(login_url='login')
 def events(request):
-    all_posts = Post.objects.all()
+    query = request.GET.get('query', '')
+    all_posts = Post.objects.filter(category__iexact='events')
+
+    if query:
+        all_posts = all_posts.filter(content__icontains=query)
+
     comment_form = CommentForm()
-    return render(request, 'events.html', {'posts': all_posts, 'comment_form': comment_form, 'current_user': request.user})
+    return render(request, 'events.html', {
+        'posts': all_posts,
+        'comment_form': comment_form,
+        'current_user': request.user
+    })
 
 
 
@@ -343,32 +369,43 @@ def delete_message(request, message_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+
+
 @login_required(login_url='login')
 def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=user_profile)
-        profile_picture_form = ProfilePictureForm(request.POST, request.FILES, instance=user_profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=user_profile)
 
-        if profile_form.is_valid() and profile_picture_form.is_valid():
-            profile_form.save()
-            profile_picture_form.save()
-
-            # Update the User model fields
+        if profile_form.is_valid():
             user = request.user
             user.first_name = profile_form.cleaned_data['first_name']
             user.last_name = profile_form.cleaned_data['last_name']
+            user.username = profile_form.cleaned_data['username']
+            user.email = profile_form.cleaned_data['email']
+
+            password1 = profile_form.cleaned_data.get('password1')
+            if password1:
+                user.set_password(password1)
             user.save()
+
+            profile_form.save()
 
             return redirect('profile')
     else:
-        profile_form = ProfileForm(instance=user_profile)
-        profile_picture_form = ProfilePictureForm(instance=user_profile)
+        initial_data = {
+            'username': request.user.username,
+            'email': request.user.email,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name
+        }
+        profile_form = ProfileForm(instance=user_profile, initial=initial_data)
 
     profile_picture_url = user_profile.profile_picture.url if user_profile.profile_picture else None
 
-    return render(request, 'profile.html', {'profile': user_profile, 'profile_form': profile_form, 'profile_picture_url': profile_picture_url})
+    return render(request, 'profile.html', {'profile_form': profile_form, 'profile_picture_url': profile_picture_url})
+
 
 
 
@@ -408,10 +445,11 @@ class SearchUserView(View):
 
         if query:
             results = User.objects.filter(
-                Q(username__icontains=query) |
                 Q(first_name__icontains=query) |
                 Q(last_name__icontains=query) |
                 Q(email__icontains=query) |
+                Q(userprofile__first_name__icontains=query) |
+                Q(userprofile__last_name__icontains=query) |
                 Q(userprofile__year_graduated__icontains=query) |
                 Q(userprofile__strand__icontains=query)
             ).distinct()
@@ -419,7 +457,6 @@ class SearchUserView(View):
             results = []
 
         return render(request, self.template_name, {'results': results, 'query': query})
-
 
 
 

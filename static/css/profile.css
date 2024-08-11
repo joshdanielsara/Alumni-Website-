@@ -420,14 +420,14 @@ strong {
 .profile-picture {
     flex: 1;
     text-align: center;
-    background-color: #001f3f;
-    max-width: 70%;
+   max-height: 100%;
+    max-width: 100%;
 }
 
 .profile-picture img {
-    border-radius: 50%;
+  
     max-width: 250px;
-    max-height: 250px;
+    max-height: 600px;
     margin: 0 auto;
     display: block;
 }
@@ -463,13 +463,16 @@ strong {
 
 .hidden {
     display: none;
+    overflow: hidden;
 }
 
 .edit-mode {
     display: none;
 }
 
-
+.profile-form{
+  overflow: hidden;
+}
 
 .navbar a:hover {
     color: #ffd700;

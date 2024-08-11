@@ -1,118 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #343a40; /* Match the text color */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        img {
-            border-radius: 50%; /* Make the image circular */
-            max-width: 100%;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        p {
-            margin: 10px 0;
-            color: #555;
-        }
-
-        strong {
-            color: #333;
-            font-weight: bold;
-        }
-
-        /* Container Styles */
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        /* Form Styles */
-        form {
-            margin-top: 20px;
-        }
-
-        button {
-            background-color: #001f3f;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #ffd700;
-        }
-
-        /* Navbar Styles */
-        .navbar {
-            background: linear-gradient(to right, #001f3f, #0056b3);
-            padding: 15px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .navbar-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.2em;
-        }
-
-        .navbar a:hover {
-            color: #ffcc00;
-        }
-        
-    </style>
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            {% if user.is_authenticated %}
-                {% if user.is_staff %}
-                    <a href="{% url 'admin_post' %}">Home</a>
-                {% else %}
-                    <a href="{% url 'home' %}">Home</a>
-                {% endif %}
-                <a href="{% url 'profile' %}">Profile</a>
-                <a href="{% url 'send_message' %}">Message</a>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-user"></i></a>
+  
+  
+  
+  
+        <div class="navigation">
+          <ul class="menu">
+            <div class="close-btn"></div>
+            <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#about">About</a>
+             
+            </li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#">Profile <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                <li class="sub-item"><a href="{% url 'profile' %}">Profile</a></li>
+                <li class="sub-item"><a href="{% url 'search_user' %}">Search Profile</a></li>
+              
+               
+              </ul>
+            </li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#">News <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                <li class="sub-item"><a href="{% url 'news' %}">News</a></li>
+                <li class="sub-item"><a href="{% url 'jobs' %}">Job Hiring</a></li>
+                <li class="sub-item"><a href="{% url 'events' %}">Events</a></li>
                 
-                <a href="{% url 'search_user' %}">Search</a>
-                <a href="{% url 'logout' %}">Logout</a>
-            {% endif %}
+               
+              </ul>
+            </li>
+            <li class="menu-item"><a href="{% url 'send_message' %}">Message</a></li>
+          
+            <li class="menu-item"><a href="#">Contact</a></li>
+            <li class="menu-item"><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
         </div>
-    </nav>
-
+        <div class="menu-btn"></div>
+      </header>
+<div class="main">
     
     <div class="container">
         <h1>User Profile</h1>
@@ -128,13 +71,6 @@
           
         </div>
 
-        
-        
-            
-
-
-        <!-- Inside your form in user_profile.html -->
-
 
 
         <div class="user-details">
@@ -147,5 +83,6 @@
 
       
     </div> 
+</div>
 </body>
 </html>

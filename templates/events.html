@@ -18,11 +18,9 @@
         <a href="#" class="logo"><i class="fas fa-user"></i></a>
   
   
-        <form action="/search" method="get" class="form">
-          
-          <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
-          
-      </form>
+        <form action="{% url 'events' %}" method="get" class="form">
+            <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
+        </form>
   
   
   
@@ -66,7 +64,7 @@
 
     <div class="container" data-profile-url="{% url 'user_profile' 'USERNAME_PLACEHOLDER' %}">
 
-        <h1 class="heading">News</h1>
+        <h1 class="heading">Events</h1>
         <div class="box-container" id="container">
             {% for post in posts %}
             {% if post.category|lower == 'events' %}
@@ -113,7 +111,7 @@
     </div>
     
                 <span class="comment-count">{{ post.comments.count }}</span>
-                <i class="fas fa-comment comment-icon" onclick="showMore(this)"></i>
+                <i class="fas fa-comment comment-icon" onclick="showMore(this)"></i><br>
                 <a href="#" class="btn" onclick="showMore(this)">See More</a>
             </div>
             {% endif %}

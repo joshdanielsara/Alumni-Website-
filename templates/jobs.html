@@ -17,12 +17,9 @@
     <header>
         <a href="#" class="logo"><i class="fas fa-user"></i></a>
   
-  
-        <form action="/search" method="get" class="form">
-          
-          <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
-          
-      </form>
+        <form action="{% url 'jobs' %}" method="get" class="form">
+            <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
+        </form>
   
   
   
@@ -93,25 +90,20 @@
                 <span class="like-count">{{ post.likes.count }}</span>
                 <i class="fas fa-heart like-icon like-button {% if request.user in post.likes.all %}liked{% endif %}" data-post-id="{{ post.id }}" id="like"></i>
                 <form id="commentForm{{ post.id }}" class="comment-form" action="{% url 'post_comment' post.id %}">
-    
                     {% csrf_token %}
                     <input type="text" id="commentInput{{ post.id }}" name="content" class="comment-input" placeholder="Add a comment...">
                 </form>
-    
-                
-               <div id="commentsContainer{{ post.id }}" class="display-comments" style="display: none;">
-        {% for comment in post.comments.all %}
-            <p class="comment" data-comment-id="{{ comment.id }}" data-username="{{ comment.user.username }}" data-firstname="{{ comment.user.first_name }}" data-createdat="{{ comment.created_at }}">
-                <a href="{% url 'user_profile' comment.user.username %}" class="user_comment">{{ comment.user.first_name }}</a>
-                : {{ comment.content }} | <span class="comment_details">{{ comment.created_at }}</span>
-                {% if comment.user == request.user %}
-                    <i class="material-icons delete-comment" data-comment-id="{{ comment.id }}" style="cursor: pointer;">delete</i>
-                {% endif %}
-            </p>
-            
-        {% endfor %}
-    </div>
-    
+                <div id="commentsContainer{{ post.id }}" class="display-comments" style="display: none;">
+                    {% for comment in post.comments.all %}
+                        <p class="comment" data-comment-id="{{ comment.id }}" data-username="{{ comment.user.username }}" data-firstname="{{ comment.user.first_name }}" data-createdat="{{ comment.created_at }}">
+                            <a href="{% url 'user_profile' comment.user.username %}" class="user_comment">{{ comment.user.first_name }}</a>
+                            : {{ comment.content }} | <span class="comment_details">{{ comment.created_at }}</span>
+                            {% if comment.user == request.user %}
+                                <i class="material-icons delete-comment" data-comment-id="{{ comment.id }}" style="cursor: pointer;">delete</i>
+                            {% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
                 <span class="comment-count">{{ post.comments.count }}</span>
                 <i class="fas fa-comment comment-icon" onclick="showMore(this)"></i><br>
                 <a href="#" class="btn" onclick="showMore(this)">See More</a>

@@ -19,23 +19,37 @@
       <a href="#" class="logo"><i class="fas fa-user"></i></a>
 
 
-      <form action="/search" method="get" class="form">
-        
-        <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
-        
-    </form>
-
 
 
       <div class="navigation">
         <ul class="menu">
           <div class="close-btn"></div>
           <li class="menu-item"><a href="#">Home</a></li>
+          {% if user.is_superuser %}
+          <li class="menu-item">
+              <a class="sub-btn" href="#">Admin <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                  <li class="sub-item"><a href="{% url 'admin_post' %}">Create Post</a></li>
+                  <li class="sub-item"><a href="{% url 'jobs' %}">Admin Management</a></li>
+              </ul>
+          </li>
+        
+          
+          {% endif %}
+
           <li class="menu-item">
             <a class="sub-btn" href="#about">About</a>
            
           </li>
-          <li class="menu-item"><a href="{% url 'profile' %}">Profile</a></li>
+          <li class="menu-item">
+            <a class="sub-btn" href="#">Profile <i class="fas fa-angle-down"></i></a>
+            <ul class="sub-menu">
+              <li class="sub-item"><a href="{% url 'profile' %}">Profile</a></li>
+              <li class="sub-item"><a href="{% url 'search_user' %}">Search Profile</a></li>
+            
+             
+            </ul>
+          </li>
           <li class="menu-item">
             <a class="sub-btn" href="#">News <i class="fas fa-angle-down"></i></a>
             <ul class="sub-menu">
@@ -43,13 +57,7 @@
               <li class="sub-item"><a href="{% url 'jobs' %}">Job Hiring</a></li>
               <li class="sub-item"><a href="{% url 'events' %}">Events</a></li>
               
-              <li class="sub-item more">
-                <a class="more-btn" href="#">More Items <i class="fas fa-angle-right"></i></a>
-                <ul class="more-menu">
-                  <li class="more-item"><a href="#">More Item 01</a></li>
-                  <li class="more-item"><a href="#">More Item 02</a></li>
-                </ul>
-              </li>
+             
             </ul>
           </li>
           <li class="menu-item"><a href="{% url 'send_message' %}">Message</a></li>

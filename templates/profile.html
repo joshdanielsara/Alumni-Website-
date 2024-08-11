@@ -18,11 +18,7 @@
         <a href="#" class="logo"><i class="fas fa-user"></i></a>
   
   
-        <form action="/search" method="get" class="form">
-          
-          <input type="text" id="search" name="query" placeholder="&#xF002; Search ..." style="font-family:Arial, FontAwesome" class="input">
-          
-      </form>
+      
   
   
   
@@ -34,9 +30,18 @@
               <a class="sub-btn" href="#about">About</a>
              
             </li>
-            <li class="menu-item"><a href="{% url 'profile' %}">Profile</a></li>
+          </li>
+          <li class="menu-item">
+            <a class="sub-btn" href="#">Profile <i class="fas fa-angle-down"></i></a>
+            <ul class="sub-menu">
+              <li class="sub-item"><a href="{% url 'profile' %}">Profile</a></li>
+              <li class="sub-item"><a href="{% url 'search_user' %}">Search Profile</a></li>
+            
+             
+            </ul>
+          </li>
             <li class="menu-item">
-              <a class="sub-btn" href="#">News <i class="fas fa-angle-down"></i></a>
+              <a class="sub-btn" href="#">Posts <i class="fas fa-angle-down"></i></a>
               <ul class="sub-menu">
                 <li class="sub-item"><a href="{% url 'news' %}">News</a></li>
                 <li class="sub-item"><a href="{% url 'jobs' %}">Job Hiring</a></li>
@@ -60,74 +65,73 @@
         <div class="menu-btn"></div>
       </header>
 
-<div class="main">
-
-    <h1>Profile</h1>
-    <div class="container">
-        <div class="profile-row">
-            <div class="profile-picture">
-                {% if profile_picture_url %}
-                    <img src="{{ profile_picture_url }}" alt="Profile Picture">
-                {% else %}
-                    <p>No profile picture available</p>
-                {% endif %}
-            </div>
-            <div class="profile-details">
-               
-                <div id="editMode" class="hidden">
-                    <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="profile-form">
-                        {% csrf_token %}
-                        {{ profile_form.as_p }}
-                        <button type="submit" name="update_details">Update Profile Details</button>
-                        <a href="{% url 'profile' %}"><button type="button">Cancel</button></a>
-                    </form>
+      <div class="main">
+        <h1>Profile</h1>
+        <div class="container">
+            <div class="profile-row">
+                <div class="profile-picture">
+                    {% if profile_picture_url %}
+                        <img src="{{ profile_picture_url }}" alt="Profile Picture">
+                    {% else %}
+                        <p>No profile picture available</p>
+                    {% endif %}
                 </div>
-                <div id="displayMode" class="display">
-                  {% for field in profile_form %}
-                      <p id="display_{{ field.name }}" class="details"><strong>{{ field.label_tag }}</strong> {{ field.value }}</p>
-                      <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" value="{{ field.value }}" class="hidden" id="edit_{{ field.name }}">
-                  {% endfor %}
-              </div>
-              
-                <button id="editButton" onclick="toggleEditMode()">Edit Profile Details</button>
+                <div class="profile-details">
+                    <div id="editMode" class="hidden">
+                        <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="profile-form">
+                            {% csrf_token %}
+                            {{ profile_form.as_p }}
+                            <button type="submit" name="update_details">Update Profile Details</button>
+                            <a href="{% url 'profile' %}"><button type="button">Cancel</button></a>
+                        </form>
+                    </div>
+                    <div id="displayMode" class="display">
+                        {% for field in profile_form %}
+                            {% if field.name != 'password1' and field.name != 'password2' %}
+                                <p id="display_{{ field.name }}" class="details"><strong>{{ field.label_tag }}</strong> {{ field.value }}</p>
+                                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" value="{{ field.value }}" class="hidden" id="edit_{{ field.name }}">
+                            {% endif %}
+                        {% endfor %}
+                        <p id="display_password" class="details"><strong>Password:</strong> ********</p>
+                    </div>
+                    <button id="editButton" onclick="toggleEditMode()">Edit Profile Details</button>
+                </div>
             </div>
         </div>
     </div>
-
-  </div>
-    <script src="{% static 'js/profile.js' %}"></script>
-    <script type="text/javascript">
-        //jquery for toggle dropdown menus
-        $(document).ready(function(){
-          //toggle sub-menus
-          $(".sub-btn").click(function(){
-            $(this).next(".sub-menu").slideToggle();
-          });
-    
-          //toggle more-menus
-          $(".more-btn").click(function(){
-            $(this).next(".more-menu").slideToggle();
-          });
-        });
-    
-        //javascript for the responsive navigation menu
-        var menu = document.querySelector(".menu");
-        var menuBtn = document.querySelector(".menu-btn");
-        var closeBtn = document.querySelector(".close-btn");
-    
-        menuBtn.addEventListener("click", () => {
-          menu.classList.add("active");
-        });
-    
-        closeBtn.addEventListener("click", () => {
-          menu.classList.remove("active");
-        });
-    
-        //javascript for the navigation bar effects on scroll
-        window.addEventListener("scroll", function(){
-          var header = document.querySelector("header");
-          header.classList.toggle("sticky", window.scrollY > 0);
-        });
-        </script>
+        <script src="{% static 'js/profile.js' %}"></script>
+        <script type="text/javascript">
+            //jquery for toggle dropdown menus
+            $(document).ready(function(){
+              //toggle sub-menus
+              $(".sub-btn").click(function(){
+                $(this).next(".sub-menu").slideToggle();
+              });
+        
+              //toggle more-menus
+              $(".more-btn").click(function(){
+                $(this).next(".more-menu").slideToggle();
+              });
+            });
+        
+            //javascript for the responsive navigation menu
+            var menu = document.querySelector(".menu");
+            var menuBtn = document.querySelector(".menu-btn");
+            var closeBtn = document.querySelector(".close-btn");
+        
+            menuBtn.addEventListener("click", () => {
+              menu.classList.add("active");
+            });
+        
+            closeBtn.addEventListener("click", () => {
+              menu.classList.remove("active");
+            });
+        
+            //javascript for the navigation bar effects on scroll
+            window.addEventListener("scroll", function(){
+              var header = document.querySelector("header");
+              header.classList.toggle("sticky", window.scrollY > 0);
+            });
+            </script>
 </body>
 </html>

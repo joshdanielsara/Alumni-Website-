@@ -56,11 +56,28 @@ class UserProfileForm(forms.ModelForm):
 
 
 
-# Profile Forms
+
+
 class ProfileForm(forms.ModelForm):
+    username = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    password1 = forms.CharField(widget=forms.PasswordInput, required=False, label="New Password")
+    password2 = forms.CharField(widget=forms.PasswordInput, required=False, label="Confirm New Password")
+
     class Meta:
         model = UserProfile
         fields = ['first_name', 'last_name', 'year_graduated', 'strand', 'profile_picture']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        if password1 or password2:
+            if password1 != password2:
+                raise forms.ValidationError("Passwords do not match.")
+        return cleaned_data
+
 
 
 

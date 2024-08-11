@@ -3,127 +3,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static%}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Search</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #343a40; /* Match the text color */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin: 20px 0;
-        }
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 
-        form {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        input {
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #001f3f;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #ffd700;
-        }
-
-        h2 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
-            text-align: center;
-        }
-
-        a {
-            color: #0056b3;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            color: #ffcc00;
-        }
-
-        p {
-            text-align: center;
-        }
-         /* Navbar Styles */
-         .navbar {
-            background: linear-gradient(to right, #001f3f, #0056b3);
-            padding: 15px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .navbar-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .navbar a {
-            color: black;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.2em;
-        }
-
-        .navbar a:hover {
-            color: #ffcc00;
-        }
-    </style>
+  <link rel="stylesheet" href="../static/css/search_user.css">
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="navbar-container">
-            {% if user.is_authenticated %}
-                {% if user.is_staff %}
-                    <a href="{% url 'admin_post' %}">Home</a>
-                {% else %}
-                    <a href="{% url 'regular_user_view' %}">Home</a>
-                {% endif %}
-
-                {% if user.is_staff %}
+    <header>
+        <a href="#" class="logo"><i class="fas fa-user"></i></a>
+  
+  
+  
+  
+        <div class="navigation">
+          <ul class="menu">
+            <div class="close-btn"></div>
+            <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#about">About</a>
+             
+            </li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#">Profile <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                <li class="sub-item"><a href="{% url 'profile' %}">Profile</a></li>
+                <li class="sub-item"><a href="{% url 'search_user' %}">Search Profile</a></li>
+              
+               
+              </ul>
+            </li>
+            <li class="menu-item">
+              <a class="sub-btn" href="#">News <i class="fas fa-angle-down"></i></a>
+              <ul class="sub-menu">
+                <li class="sub-item"><a href="{% url 'news' %}">News</a></li>
+                <li class="sub-item"><a href="{% url 'jobs' %}">Job Hiring</a></li>
+                <li class="sub-item"><a href="{% url 'events' %}">Events</a></li>
                 
-                {% else %}
-                <a href="{% url 'profile' %}">Profile</a>
-                {% endif %}
-                <a href="{% url 'send_message' %}">Message</a>
-                
-                <a href="{% url 'logout' %}" class="logout-link">Logout</a>
-            {% endif %}
+               
+              </ul>
+            </li>
+            <li class="menu-item"><a href="{% url 'send_message' %}">Message</a></li>
+          
+            <li class="menu-item"><a href="#">Contact</a></li>
+            <li class="menu-item"><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
         </div>
-    </nav>
+        <div class="menu-btn"></div>
+      </header>
+
+      
+      <div class="main">
     <h1>User Search</h1>
 
     <form method="get" action="{% url 'search_user' %}">
@@ -136,20 +74,29 @@
 
     {% if results %}
     <h2>Search Results:</h2>
-    <ul>
+    <div class="results">
         {% for user in results %}
-            <li><a href="{% url 'user_profile' username=user.username %}">{{ user.username }}</a></li>
-            <li>First Name: {{ user.userprofile.first_name }}</li> <!-- Accessing related fields correctly -->
-            <li>Last Name: {{ user.userprofile.last_name }}</li> <!-- Accessing related fields correctly -->
-            <li>Email: {{ user.email }}</li>
-            <li>Year Graduated: {{ user.userprofile.year_graduated }}</li> <!-- Accessing related fields correctly -->
-            <li>Strand: {{ user.userprofile.strand }}</li> <!-- Accessing related fields correctly -->
-            <!-- ... other user attributes ... -->
+        <div class="user-card">
+            {% if user.userprofile.profile_picture %}
+                <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.userprofile.first_name }}" class="profile-picture">
+            {% else %}
+                <!-- Optional: Add a placeholder for users without a profile picture -->
+            {% endif %}
+            <div class="user-details">
+                <p>First Name: <a href="{% url 'user_profile' username=user.username %}">{{ user.userprofile.first_name }}</a></p>
+                <p>Last Name: {{ user.userprofile.last_name }}</p>
+                <p>Email: {{ user.email }}</p>
+                <p>Year Graduated: {{ user.userprofile.year_graduated }}</p>
+                <p>Strand: {{ user.userprofile.strand }}</p>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-{% else %}
+    </div>
+    {% else %}
     <p>No results found.</p>
-{% endif %}
+    {% endif %}
+    
+</div>
 
 
 </body>
